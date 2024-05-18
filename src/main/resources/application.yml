@@ -1,6 +1,20 @@
 spring:
   application:
-    name: MeatEco
+    name: Moo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://moo-db.cbyko4e8sx30.ap-northeast-2.rds.amazonaws.com:3306/mooDB?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: password
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
 
 springdoc:
   swagger-ui:
