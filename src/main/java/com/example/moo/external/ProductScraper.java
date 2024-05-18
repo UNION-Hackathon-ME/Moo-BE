@@ -2,10 +2,17 @@ package com.example.moo.external;
 
 import com.example.moo.domain.Product;
 import com.example.moo.domain.Review;
+import com.example.moo.dto.ProductDetailResponse;
+import com.example.moo.dto.ProductListResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.parser.ParseException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,112 +26,58 @@ public class ProductScraper {
   public ProductScraper() {
   }
 
-  public List<Product> scrapeList(String keyword) throws IOException, ParseException {
-//    String encodedKeyword = URLEncoder.encode(keyword, "UTF-8");
-//    String apiURL = "https://openapi.naver.com/v1/search/shop.json?query="+encodedKeyword+"&display=100";
-//    URL url = new URL(apiURL);
-//
-//    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//    con.setRequestMethod("GET");
-//    con.setRequestProperty("X-Naver-Client-Id", client_id);
-//    con.setRequestProperty("X-Naver-Client-Secret", client_secret);
-//    con.setRequestProperty("Referer", "");
-//
-//    int responseCode = con.getResponseCode();
-//    BufferedReader br;
-//    if (responseCode == 200) {
-//      br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//    } else {
-//      br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-//    }
-//    String inputLine;
-//    StringBuffer response = new StringBuffer();
-//    while ((inputLine = br.readLine()) != null) {
-//      response.append(inputLine);
-//    }
-//    br.close();
-//
-//    JSONParser jsonParser = new JSONParser();
-//    JSONObject jsonObject = (JSONObject) jsonParser.parse(response.toString());
-//    JSONArray jsonArray = (JSONArray) jsonObject.get("items");
-    List<Product> productList = new ArrayList<>();
-//
-//    for (int i = 0; i < jsonArray.size(); i++) {
-//      JSONObject obj = (JSONObject) jsonArray.get(i);
-//      Product product = new Product(
-//          (String) obj.get("productId"),
-//          (String) obj.get("title"),
-//          (String) obj.get("image"),
-//          (String) obj.get("mallName"),
-//          (String) obj.get("link"),
-//          Integer.parseInt((String) obj.get("lprice"))
-//      );
-//
-//      List<String> informationList = new ArrayList<>();
-////      Document document = Jsoup.connect((String) obj.get("link")).get();
-//      Document document = Jsoup.connect("https://smartstore.naver.com/daranul/products/5164040518?NaPm=ct%3Dlwbzw5z4%7Cci%3Dfcd2e124cb67af7f77a0271e1b2dcc9f6173039a%7Ctr%3Dsls%7Csn%3D1256601%7Chk%3Def0f99efd21a0c1c5712f9d7ee4d3672753f11f3").get();
-//      Elements informationElements = document.select("div.se-text-paragraph.se-text-paragraph-align-center img");
-//      for (Element img : informationElements) {
-//        informationList.add(img.attr("src"));
-//      }
-//
-//      String mallImage = document.getElementsByClass("_1irdI5QNOR").first().attr("src");
-//
-//      double reviewNum = Double.parseDouble(document.select("strong._2pgHN-ntx6").first().text());
-//
-//      product.setMallImage(mallImage);
-//      product.setReviewNum(reviewNum);
-//
-//      productList.add(product);
-//    }
-    List<String> productDetail = new ArrayList<>();
-    List<Review> reviewList = new ArrayList<>();
-    productDetail.add("https://proxy-smartstore.naver.net/img/c3RvcmUuaW1nMTEuY28ua3IvNjQ2MTgwOTkvZDA5NDE2MTMtMDg0My00ZGJhLWFlMDctOGQwMmUwYmEzZTY3XzE2MDI3MzczOTkxMzEuanBn?token=f60a032a3d576090e90cc8f2cf5219ee");
-    reviewList.add(new Review(3.5, "맛있어요"));
+  public List<ProductListResponse> scrapeList(String keyword) throws IOException, ParseException {
+    List<ProductListResponse> productListResponseList = new ArrayList<>();
+    String url = "https://www.coupang.com/np/search?component=&q=" + URLEncoder.encode(keyword, "UTF-8");
+    Document doc = Jsoup.connect(url).timeout(0)
+        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+        .cookie("a","b").get();
 
-    productList.add(new Product(
-        "234723894",
-        "제품명1",
-        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
-        "스토어명1",
-        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
-        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
-        44000,
-        productDetail,
-        3.5,
-        reviewList));
+    Elements products = doc.select("li.search-product");
 
-    productList.add(new Product(
-        "2347238943",
-        "제품명2",
-        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
-        "스토어명2",
-        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
-        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
-        44300,
-        productDetail,
-        3.1,
-        reviewList));
+    for (Element product : products) {
+      String productId = product.attr("data-product-id");
+      String productImage = product.select("img.search-product-wrap img").attr("src");
+      String productName = product.select("div.name").text();
+      int price = Integer.parseInt(product.select("strong.price-value").text().replaceAll(",",""));
 
-    return productList;
+      ProductListResponse productListResponse = new ProductListResponse(productId, productImage, productName, price, 3.5);
+      productListResponseList.add(productListResponse);
+    }
+
+    return productListResponseList;
   }
 
-  public Product scrapeProduct(String productId) throws IOException, ParseException {
+  public ProductDetailResponse scrapeProduct(String productId) throws IOException, ParseException {
+
+//    jsoup
+//    https://www.coupang.com/vp/products/여기에productId
+
+    String url = "https://www.coupang.com/vp/products/" + productId;
+    Document doc = Jsoup.connect(url).timeout(0)
+        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+        .cookie("a","b").get();
+
+    Element product = doc.select("section.contents").first();
+
+    String productImage = product.select("img.prod-image__detail").attr("src");
+    String productName = product.select("h2.prod-buy-header__title").text();
+    String mallName = product.select("a.prod-sale-vendor-name").text();
+    int price = Integer.parseInt(product.select("span.total-price strong").first().text().replaceAll(",","").replaceAll("원",""));
     List<String> productDetail = new ArrayList<>();
+
+    Elements imageList = product.select(".subType-IMAGE");
+    for (Element image : imageList) {
+      System.out.println(image.toString());
+
+      productDetail.add(image.select("img").attr("src"));
+    }
+    double reviewScoreAvg = 3.5;
     List<Review> reviewList = new ArrayList<>();
-    productDetail.add("https://proxy-smartstore.naver.net/img/c3RvcmUuaW1nMTEuY28ua3IvNjQ2MTgwOTkvZDA5NDE2MTMtMDg0My00ZGJhLWFlMDctOGQwMmUwYmEzZTY3XzE2MDI3MzczOTkxMzEuanBn?token=f60a032a3d576090e90cc8f2cf5219ee");
+
     reviewList.add(new Review(3.5, "맛있어요"));
 
-    return new Product(
-        "234723894",
-        "제품명1",
-        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
-        "스토어명1",
-        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
-        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
-        44000,
-        productDetail,
-        3.5,
-        reviewList);
+    ProductDetailResponse productDetailResponse = new ProductDetailResponse(productId, productImage, productName, mallName, price, productDetail, reviewScoreAvg, reviewList);
+    return productDetailResponse;
   }
 }

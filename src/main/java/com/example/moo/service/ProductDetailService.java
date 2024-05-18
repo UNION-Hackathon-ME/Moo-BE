@@ -18,17 +18,7 @@ public class ProductDetailService {
 
     public ProductDetailResponse getProductInfo(String productId)
         throws IOException, ParseException {
-        Product product = productScraper.scrapeProduct(productId);
-        ProductDetailResponse productDetailResponse = new ProductDetailResponse(
-            product.getProductId(),
-            product.getProductImage(),
-            product.getMallImage(),
-            product.getProductName(),
-            product.getPrice(),
-            product.getProductDetail(),
-            product.getReviewScoreAvg(),
-            product.getReviewList()
-        );
+        ProductDetailResponse productDetailResponse = productScraper.scrapeProduct(productId);
         return productDetailResponse;
     }
 }
