@@ -13,16 +13,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductScraper {
-  @Value("${extern.naver.client-ID}")
-  String client_id;
-  @Value("${extern.naver.client-Secret}")
-  String client_secret;
-
   private final ReviewRepository repository;
 
   public ProductScraper(ReviewRepository repository) {
@@ -62,21 +61,28 @@ public class ProductScraper {
 
     String productImage = product.select("img.prod-image__detail").attr("src");
     String productName = product.select("h2.prod-buy-header__title").text();
-    String mallName = product.select("a.prod-sale-vendor-name").text();
+    String mallName = doc.select("a.prod-sale-vendor-name").text();
     int price = Integer.parseInt(product.select("span.total-price strong").first().text().replaceAll(",","").replaceAll("원",""));
     List<String> productDetail = new ArrayList<>();
 
-    Elements imageList = product.select(".subType-IMAGE");
-    for (Element image : imageList) {
-      System.out.println(image.toString());
+    WebDriver driver = new ChromeDriver();
+    driver.get(url);
 
-      productDetail.add(image.select("img").attr("src"));
+    List<WebElement> imageList = driver.findElements(By.cssSelector(".type-IMAGE_NO_SPACE"));
+
+    for (WebElement img : imageList) {
+      String link = img.findElement(By.cssSelector("img")).getAttribute("src");
+      productDetail.add(link);
     }
+
+    driver.quit();
+
+
     double reviewScoreAvg = repository.selectReviewAvg(productId);
 
     List<Review> reviewList = repository.findReviews(productId);
 
-    ProductDetailResponse productDetailResponse = new ProductDetailResponse(productId, productImage, productName, mallName, price, productDetail, reviewScoreAvg, reviewList);
+    ProductDetailResponse productDetailResponse = new ProductDetailResponse(productId, productImage, mallName, productName, price, productDetail, reviewScoreAvg, reviewList);
     return productDetailResponse;
   }
 }

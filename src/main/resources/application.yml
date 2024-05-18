@@ -28,8 +28,3 @@ springdoc:
 
   paths-to-match:
     - /api/**
-
-extern:
-  naver:
-    client-ID: aqljeMYhEg4rpRhjruiZ
-    client-Secret: N0TO69U5t8
