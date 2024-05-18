@@ -19,7 +19,14 @@ public class ProductListService {
   public List<ProductListResponse> findProduct(String keyword) throws IOException, ParseException {
     List<Product> productList = productScrapper.scrape(keyword);
     List<ProductListResponse> productListResponseList = new ArrayList<>();
+    for (Product product : productList) {
+      productListResponseList.add(new ProductListResponse(
+          product.getProductId(),
+          product.getProductImage(),
+          product.getProductName(),
+          product.getPrice(),
+          product.getReviewScoreAvg()));
+    }
     return productListResponseList;
   }
-
 }

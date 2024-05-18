@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Product {
   private String productId;
   private String productName;
@@ -15,7 +16,7 @@ public class Product {
   private String mallImage;
   private String link;
   private int price;
-  private double reviewNum;
+  private double reviewScoreAvg;
 
   public Product(String productId, String productName, String productImage, String mallName,
       String link, int price) {
