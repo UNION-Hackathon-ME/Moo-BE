@@ -33,7 +33,6 @@ public class ProductScraper {
     List<ProductListResponse> productListResponseList = new ArrayList<>();
     String url = "https://www.coupang.com/np/search?component=&q=" + URLEncoder.encode(keyword, "UTF-8");
     Document doc = Jsoup.connect(url).timeout(0)
-        .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
         .cookie("a","b").get();
 
     Elements products = doc.select("li.search-product");
@@ -65,17 +64,17 @@ public class ProductScraper {
     int price = Integer.parseInt(product.select("span.total-price strong").first().text().replaceAll(",","").replaceAll("원",""));
     List<String> productDetail = new ArrayList<>();
 
-    WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless").addArguments("--disable-gpu"));
-    driver.get(url);
-
-    List<WebElement> imageList = driver.findElements(By.cssSelector(".type-IMAGE_NO_SPACE"));
-
-    for (WebElement img : imageList) {
-      String link = img.findElement(By.cssSelector("img")).getAttribute("src");
-      productDetail.add(link);
-    }
-
-    driver.quit();
+//    WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless").addArguments("--disable-gpu"));
+//    driver.get(url);
+//
+//    List<WebElement> imageList = driver.findElements(By.cssSelector(".type-IMAGE_NO_SPACE"));
+//
+//    for (WebElement img : imageList) {
+//      String link = img.findElement(By.cssSelector("img")).getAttribute("src");
+//      productDetail.add(link);
+//    }
+//
+//    driver.quit();
 
 
     double reviewScoreAvg = repository.selectReviewAvg(productId);
