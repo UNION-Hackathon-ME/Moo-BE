@@ -2,9 +2,7 @@ package com.example.moo.service;
 
 import com.example.moo.domain.Product;
 import com.example.moo.dto.ProductDetailResponse;
-import com.example.moo.dto.ProductListResponse;
 import com.example.moo.external.ProductScraper;
-import com.example.moo.external.ProductScrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
