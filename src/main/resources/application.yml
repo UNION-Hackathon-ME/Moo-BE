@@ -28,3 +28,6 @@ springdoc:
 
   paths-to-match:
     - /api/**
+
+server:
+  port: 8080

@@ -55,7 +55,6 @@ public class ProductScraper {
   public ProductDetailResponse scrapeProduct(String productId) throws IOException, ParseException {
     String url = "https://www.coupang.com/vp/products/" + productId;
     Document doc = Jsoup.connect(url).timeout(0)
-        .userAgent("Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36,gzip(gfe)")
         .cookie("a","b").get();
 
     Element product = doc.select("section.contents").first();
