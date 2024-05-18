@@ -1,22 +1,11 @@
 package com.example.moo.external;
 
 import com.example.moo.domain.Product;
-import java.io.BufferedReader;
+import com.example.moo.domain.Review;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +19,7 @@ public class ProductScraper {
   public ProductScraper() {
   }
 
-  public List<Product> scrape(String keyword) throws IOException, ParseException {
+  public List<Product> scrapeList(String keyword) throws IOException, ParseException {
 //    String encodedKeyword = URLEncoder.encode(keyword, "UTF-8");
 //    String apiURL = "https://openapi.naver.com/v1/search/shop.json?query="+encodedKeyword+"&display=100";
 //    URL url = new URL(apiURL);
@@ -88,12 +77,54 @@ public class ProductScraper {
 //
 //      productList.add(product);
 //    }
-    productList.add(new Product("234723894", "제품명1", "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
-        "스토어명1", "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120", "https://smartstore.naver.com/daranul/products/5164040518?NaPm=ct%3Dlwbzw5z4%7Cci%3Dfcd2e124cb67af7f77a0271e1b2dcc9f6173039a%7Ctr%3Dsls%7Csn%3D1256601%7Chk%3Def0f99efd21a0c1c5712f9d7ee4d3672753f11f3",
-        44000, 3.5));
-    productList.add(new Product("234723834", "제품명2", "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
-        "스토어명2", "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120", "https://smartstore.naver.com/daranul/products/5164040518?NaPm=ct%3Dlwbzw5z4%7Cci%3Dfcd2e124cb67af7f77a0271e1b2dcc9f6173039a%7Ctr%3Dsls%7Csn%3D1256601%7Chk%3Def0f99efd21a0c1c5712f9d7ee4d3672753f11f3",
-        45000, 3.3));
+    List<String> productDetail = new ArrayList<>();
+    List<Review> reviewList = new ArrayList<>();
+    productDetail.add("https://proxy-smartstore.naver.net/img/c3RvcmUuaW1nMTEuY28ua3IvNjQ2MTgwOTkvZDA5NDE2MTMtMDg0My00ZGJhLWFlMDctOGQwMmUwYmEzZTY3XzE2MDI3MzczOTkxMzEuanBn?token=f60a032a3d576090e90cc8f2cf5219ee");
+    reviewList.add(new Review(3.5, "맛있어요"));
+
+    productList.add(new Product(
+        "234723894",
+        "제품명1",
+        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
+        "스토어명1",
+        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
+        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
+        44000,
+        productDetail,
+        3.5,
+        reviewList));
+
+    productList.add(new Product(
+        "2347238943",
+        "제품명2",
+        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
+        "스토어명2",
+        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
+        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
+        44300,
+        productDetail,
+        3.1,
+        reviewList));
+
     return productList;
+  }
+
+  public Product scrapeProduct(String productId) throws IOException, ParseException {
+    List<String> productDetail = new ArrayList<>();
+    List<Review> reviewList = new ArrayList<>();
+    productDetail.add("https://proxy-smartstore.naver.net/img/c3RvcmUuaW1nMTEuY28ua3IvNjQ2MTgwOTkvZDA5NDE2MTMtMDg0My00ZGJhLWFlMDctOGQwMmUwYmEzZTY3XzE2MDI3MzczOTkxMzEuanBn?token=f60a032a3d576090e90cc8f2cf5219ee");
+    reviewList.add(new Review(3.5, "맛있어요"));
+
+    return new Product(
+        "234723894",
+        "제품명1",
+        "https://shopping-phinf.pstatic.net/main_4718437/47184375491.jpg",
+        "스토어명1",
+        "https://shop-phinf.pstatic.net/20210223_138/1614090059782Ww71b_JPEG/15225902490708902_316447724.jpg?type=m120",
+        "https://search.shopping.naver.com/gate.nhn?id=47520043571",
+        44000,
+        productDetail,
+        3.5,
+        reviewList);
   }
 }

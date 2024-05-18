@@ -1,8 +1,8 @@
 package com.example.moo.domain;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -16,7 +16,9 @@ public class Product {
   private String mallImage;
   private String link;
   private int price;
+  private List<String> productDetail;
   private double reviewScoreAvg;
+  private List<Review> reviewList;
 
   public Product(String productId, String productName, String productImage, String mallName,
       String link, int price) {

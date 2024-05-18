@@ -17,7 +17,7 @@ public class ProductListService {
   private final ProductScraper productScrapper;
 
   public List<ProductListResponse> findProduct(String keyword) throws IOException, ParseException {
-    List<Product> productList = productScrapper.scrape(keyword);
+    List<Product> productList = productScrapper.scrapeList(keyword);
     List<ProductListResponse> productListResponseList = new ArrayList<>();
     for (Product product : productList) {
       productListResponseList.add(new ProductListResponse(

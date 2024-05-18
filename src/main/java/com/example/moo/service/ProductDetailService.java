@@ -16,10 +16,19 @@ public class ProductDetailService {
 
     private final ProductScraper productScraper;
 
-    public List<ProductDetailResponse> findProduct(String keyword)
+    public ProductDetailResponse getProductInfo(String productId)
         throws IOException, ParseException {
-        List<Product> productList = productScraper.scrape(keyword);
-        List<ProductDetailResponse> productListResponseList = new ArrayList<>();
-        return productListResponseList;
+        Product product = productScraper.scrapeProduct(productId);
+        ProductDetailResponse productDetailResponse = new ProductDetailResponse(
+            product.getProductId(),
+            product.getProductImage(),
+            product.getMallImage(),
+            product.getProductName(),
+            product.getPrice(),
+            product.getProductDetail(),
+            product.getReviewScoreAvg(),
+            product.getReviewList()
+        );
+        return productDetailResponse;
     }
 }
