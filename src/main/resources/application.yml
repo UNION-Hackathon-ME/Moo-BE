@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: MeatEco
+
+springdoc:
+  swagger-ui:
+    path: /api-test
+
+    groups-order: DESC
+
+    tags-sorter: alpha
+
+    operations-sorter: method
+
+  paths-to-match:
+    - /api/**
