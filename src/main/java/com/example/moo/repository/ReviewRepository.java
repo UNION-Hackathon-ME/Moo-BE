@@ -7,4 +7,5 @@ import java.util.List;
 public interface ReviewRepository {
   void save(Review review);
   List<Review> findReviews(String productId);
+  double selectReviewAvg(String productId);
 }

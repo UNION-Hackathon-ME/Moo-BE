@@ -1,9 +1,9 @@
 package com.example.moo.external;
 
-import com.example.moo.domain.Product;
 import com.example.moo.domain.Review;
 import com.example.moo.dto.ProductDetailResponse;
 import com.example.moo.dto.ProductListResponse;
+import com.example.moo.repository.ReviewRepository;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -23,7 +23,10 @@ public class ProductScraper {
   @Value("${extern.naver.client-Secret}")
   String client_secret;
 
-  public ProductScraper() {
+  private final ReviewRepository repository;
+
+  public ProductScraper(ReviewRepository repository) {
+    this.repository = repository;
   }
 
   public List<ProductListResponse> scrapeList(String keyword) throws IOException, ParseException {
@@ -40,8 +43,9 @@ public class ProductScraper {
       String productImage = product.select("img.search-product-wrap img").attr("src");
       String productName = product.select("div.name").text();
       int price = Integer.parseInt(product.select("strong.price-value").text().replaceAll(",",""));
+      double reviewScoreAvg = repository.selectReviewAvg(productId);
 
-      ProductListResponse productListResponse = new ProductListResponse(productId, productImage, productName, price, 3.5);
+      ProductListResponse productListResponse = new ProductListResponse(productId, productImage, productName, price, reviewScoreAvg);
       productListResponseList.add(productListResponse);
     }
 
@@ -49,10 +53,6 @@ public class ProductScraper {
   }
 
   public ProductDetailResponse scrapeProduct(String productId) throws IOException, ParseException {
-
-//    jsoup
-//    https://www.coupang.com/vp/products/여기에productId
-
     String url = "https://www.coupang.com/vp/products/" + productId;
     Document doc = Jsoup.connect(url).timeout(0)
         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
@@ -72,10 +72,9 @@ public class ProductScraper {
 
       productDetail.add(image.select("img").attr("src"));
     }
-    double reviewScoreAvg = 3.5;
-    List<Review> reviewList = new ArrayList<>();
+    double reviewScoreAvg = repository.selectReviewAvg(productId);
 
-    reviewList.add(new Review(3.5, "맛있어요"));
+    List<Review> reviewList = repository.findReviews(productId);
 
     ProductDetailResponse productDetailResponse = new ProductDetailResponse(productId, productImage, productName, mallName, price, productDetail, reviewScoreAvg, reviewList);
     return productDetailResponse;
