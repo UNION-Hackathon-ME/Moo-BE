@@ -17,6 +17,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +66,7 @@ public class ProductScraper {
     int price = Integer.parseInt(product.select("span.total-price strong").first().text().replaceAll(",","").replaceAll("원",""));
     List<String> productDetail = new ArrayList<>();
 
-    WebDriver driver = new ChromeDriver();
+    WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless").addArguments("--disable-gpu"));
     driver.get(url);
 
     List<WebElement> imageList = driver.findElements(By.cssSelector(".type-IMAGE_NO_SPACE"));
