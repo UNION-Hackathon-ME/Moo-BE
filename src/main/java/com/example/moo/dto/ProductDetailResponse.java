@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ProductDetailResponse {
     private String productId;
     private String productImage;
-    private String mallImage;
+    private String mallName;
     private String productName;
     private int price;
     private List<String> productDetail;
