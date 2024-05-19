@@ -52,7 +52,7 @@ public class ProductScraper {
   }
 
   public ProductDetailResponse scrapeProduct(String productId) throws IOException, ParseException {
-    String url = "http://www.coupang.com/vp/products/" + productId;
+    String url = "http://www.coupang.com/vp/products/" + URLEncoder.encode(productId, "UTF-8");
     Document doc = Jsoup.connect(url).timeout(0)
         .cookie("a","b").get();
 
