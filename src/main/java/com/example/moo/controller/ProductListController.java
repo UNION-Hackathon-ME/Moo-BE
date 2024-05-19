@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.util.List;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 @RestController
 @RequestMapping("/api/product-list")
