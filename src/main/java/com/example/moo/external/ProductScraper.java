@@ -39,7 +39,7 @@ public class ProductScraper {
 
     for (Element product : products) {
       String productId = product.attr("data-product-id");
-      String productImage = product.select("img.search-product-wrap img").attr("src");
+      String productImage = product.select("img.search-product-wrap-img").attr("src");
       String productName = product.select("div.name").text();
       int price = Integer.parseInt(product.select("strong.price-value").text().replaceAll(",",""));
       double reviewScoreAvg = repository.selectReviewAvg(productId);
